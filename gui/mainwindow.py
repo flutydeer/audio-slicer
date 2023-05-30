@@ -40,6 +40,8 @@ class MainWindow(QMainWindow):
         self.ui.leHopSize.setValidator(validator)
         self.ui.leMaxSilence.setValidator(validator)
 
+        self.ui.lwTaskList.setAlternatingRowColors(True)
+
         # State variables
         self.workers: list[QThread] = []
         self.workCount = 0
