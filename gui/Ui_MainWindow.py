@@ -12,14 +12,14 @@ from PySide6.QtCore import (QCoreApplication, QMetaObject, Qt)
 from PySide6.QtGui import (QFont)
 from PySide6.QtWidgets import (QFormLayout, QFrame, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QProgressBar, QPushButton, QSplitter,
+    QProgressBar, QPushButton, QTabWidget,
     QSizePolicy, QVBoxLayout, QWidget, QAbstractItemView, QGraphicsView)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1400, 700)
+        MainWindow.resize(1140, 656)
         font = QFont()
         font.setFamily(u"Microsoft YaHei UI")
         MainWindow.setFont(font)
@@ -29,40 +29,39 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.gbPreview = QGroupBox(self.centralwidget)
-        self.gbPreview.setObjectName(u"gbPreview")
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.gbPreview.sizePolicy().hasHeightForWidth())
-        self.gbPreview.setSizePolicy(sizePolicy)
-        self.verticalLayout_3 = QVBoxLayout(self.gbPreview)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.graphicsView = QGraphicsView(self.gbPreview)
-        self.graphicsView.setObjectName(u"graphicsView")
+        self.twImages = QTabWidget(self.centralwidget)
+        self.twImages.setObjectName(u"twImages")
+        self.twImages.setTabShape(QTabWidget.Rounded)
+        self.twImages.setUsesScrollButtons(True)
+        self.twImages.setDocumentMode(True)
+        self.twImages.setTabsClosable(True)
+        self.twImages.setMovable(True)
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.twImages.addTab(self.tab, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.twImages.addTab(self.tab_2, "")
 
-        self.verticalLayout_3.addWidget(self.graphicsView)
-
-
-        self.horizontalLayout.addWidget(self.gbPreview)
+        self.horizontalLayout.addWidget(self.twImages)
 
         self.gbTasks = QGroupBox(self.centralwidget)
         self.gbTasks.setObjectName(u"gbTasks")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.gbTasks.sizePolicy().hasHeightForWidth())
-        self.gbTasks.setSizePolicy(sizePolicy1)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.gbTasks.sizePolicy().hasHeightForWidth())
+        self.gbTasks.setSizePolicy(sizePolicy)
         self.verticalLayout_2 = QVBoxLayout(self.gbTasks)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.btnAddFiles = QPushButton(self.gbTasks)
         self.btnAddFiles.setObjectName(u"btnAddFiles")
         self.btnAddFiles.setEnabled(True)
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.btnAddFiles.sizePolicy().hasHeightForWidth())
-        self.btnAddFiles.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.btnAddFiles.sizePolicy().hasHeightForWidth())
+        self.btnAddFiles.setSizePolicy(sizePolicy1)
 
         self.verticalLayout_2.addWidget(self.btnAddFiles)
 
@@ -210,7 +209,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.gbPreview.setTitle(QCoreApplication.translate("MainWindow", u"Preview", None))
+        self.twImages.setTabText(self.twImages.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
+        self.twImages.setTabText(self.twImages.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Tab 2", None))
         self.gbTasks.setTitle(QCoreApplication.translate("MainWindow", u"Tasks", None))
         self.btnAddFiles.setText(QCoreApplication.translate("MainWindow", u"Add Audio Files...", None))
         self.btnRemove.setText(QCoreApplication.translate("MainWindow", u"Remove", None))

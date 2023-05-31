@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
         self.ui.btnClearList.clicked.connect(self._on_clear_audio_list)
         self.ui.btnAbout.clicked.connect(self._on_about)
         self.ui.btnStart.clicked.connect(self._on_start)
+        self.ui.twImages.tabCloseRequested.connect(self._on_tab_close_requested)
 
         self.ui.progressBar.setMinimum(0)
         self.ui.progressBar.setMaximum(100)
@@ -52,6 +53,9 @@ class MainWindow(QMainWindow):
 
         # Must set to accept drag and drop events
         self.setAcceptDrops(True)
+
+    def _on_tab_close_requested(self, index):
+        self.ui.twImages.removeTab(index)
 
     def _on_browse_output_dir(self):
         path = QFileDialog.getExistingDirectory(
