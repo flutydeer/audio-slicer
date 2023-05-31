@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>768</width>
-    <height>480</height>
+    <height>483</height>
    </rect>
   </property>
   <property name="font">
@@ -207,6 +207,13 @@
           </layout>
          </item>
          <item>
+          <widget class="QPushButton" name="btnPreviewSelection">
+           <property name="text">
+            <string>Preview Selection</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
             <string>Output Directory (default to the same as the audio)</string>
@@ -235,6 +242,13 @@
           </layout>
          </item>
          <item>
+          <widget class="QCheckBox" name="cbxOpenOutuptDirectory">
+           <property name="text">
+            <string>Open output directory when finished</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -258,13 +272,6 @@
        <widget class="QProgressBar" name="progressBar">
         <property name="value">
          <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnPreview">
-        <property name="text">
-         <string>Preview...</string>
         </property>
        </widget>
       </item>

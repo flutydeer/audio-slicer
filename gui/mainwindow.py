@@ -27,7 +27,17 @@ class MainWindow(QMainWindow):
         self.ui.btnClearList.clicked.connect(self._on_clear_audio_list)
         self.ui.btnAbout.clicked.connect(self._on_about)
         self.ui.btnStart.clicked.connect(self._on_start)
-        self.ui.twImages.tabCloseRequested.connect(self._on_tab_close_requested)
+        # self.ui.twImages.tabCloseRequested.connect(self._on_tab_close_requested)
+
+        # tab = QLabel()
+        # pix = QPixmap('preview.png')
+        # scalH = int(tab.height() * 1.25)
+        # scalW = pix.scaledToHeight(scalH).width()
+        # if (self.ui.twImages.width() < scalW):
+        #     scalW = int(tab.width() * 1.25)
+        #     scalH = pix.scaledToWidth(scalW).height()
+        # tab.setPixmap(pix.scaled(scalW, scalH))
+        # self.ui.twImages.addTab(tab, "preview.png")
 
         self.ui.progressBar.setMinimum(0)
         self.ui.progressBar.setMaximum(100)
