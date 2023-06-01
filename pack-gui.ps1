@@ -14,7 +14,6 @@ Remove-Item ./dist/slicer-gui/PySide6/Qt6Network.dll
 Remove-Item ./dist/slicer-gui/PySide6/QtNetwork.pyd
 Remove-Item ./dist/slicer-gui/PySide6/Qt6QmlModels.dll
 Remove-Item ./dist/slicer-gui/PySide6/Qt6VirtualKeyboard.dll
-Remove-Item ./dist/slicer-gui/PySide6/Qt6Svg.dll
 Remove-Item -Path ./dist/slicer-gui/PySide6/translations -Recurse
 
 # Compress files
