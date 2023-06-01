@@ -1,9 +1,8 @@
 import os
 import sys
 import datetime
-
-from PySide6 import QtCore
-from PySide6.QtWidgets import QApplication
+import qdarktheme
+from PySide6.QtWidgets import QApplication, QStyleFactory
 from PySide6.QtGui import QFont
 
 import gui.mainwindow
@@ -20,6 +19,23 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setApplicationName("Audio Slicer")
     app.setApplicationDisplayName("Audio Slicer")
+    
+    # Apply auto dark theme
+    qdarktheme.setup_theme(
+        theme="auto",
+        # custom_colors={
+        #     "[dark]": {
+        #         "primary": "#8dc8d1",
+        #         },
+        #     "[light]": {
+        #         "primary": "#3b7d92",
+        #     }
+        # }
+    )
+
+    # Auto dark title bar on Windows 10/11
+    style = QStyleFactory.create("fusion")
+    app.setStyle(style)
 
     font = QFont('Microsoft YaHei UI')
     font.setPixelSize(12)

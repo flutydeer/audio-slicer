@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.setMinimum(0)
         self.ui.progressBar.setMaximum(100)
         self.ui.progressBar.setValue(0)
+        self.ui.pushButtonStart.setDefault(True)
 
         validator = QRegularExpressionValidator(QRegularExpression(r"\d+"))
         self.ui.lineEditThreshold.setValidator(QDoubleValidator())
@@ -36,6 +37,8 @@ class MainWindow(QMainWindow):
         self.ui.lineEditMinInterval.setValidator(validator)
         self.ui.lineEditHopSize.setValidator(validator)
         self.ui.lineEditMaxSilence.setValidator(validator)
+
+        self.ui.listWidgetTaskList.setAlternatingRowColors(True)
 
         # State variables
         self.workers: list[QThread] = []
@@ -63,6 +66,7 @@ class MainWindow(QMainWindow):
             self, 'Select Audio Files', ".", 'Wave Files(*.wav)')
         for path in paths:
             item = QListWidgetItem()
+            item.setSizeHint(QSize(200, 24))
             item.setText(QFileInfo(path).fileName())
             # Save full path at custom role
             item.setData(Qt.ItemDataRole.UserRole + 1, path)
@@ -77,7 +81,7 @@ class MainWindow(QMainWindow):
 
     def _q_about(self):
         QMessageBox.information(
-            self, "About", "Audio Slicer v1.1.0\nCopyright 2020-2023 OpenVPI Team")
+            self, "About", "Audio Slicer v1.2.0\nCopyright 2020-2023 OpenVPI Team")
 
     def _q_start(self):
         if self.processing:
@@ -219,6 +223,7 @@ class MainWindow(QMainWindow):
             if ext.lower() != '.wav':
                 continue
             item = QListWidgetItem()
+            item.setSizeHint(QSize(200, 24))
             item.setText(QFileInfo(path).fileName())
             item.setData(Qt.ItemDataRole.UserRole + 1,
                          path)

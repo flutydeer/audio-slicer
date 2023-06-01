@@ -6,7 +6,9 @@ A simple GUI application that slices audio with silence detection.
 
 ## Screenshots
 
-![image](./screenshot_1.jpg)
+![image](./screenshot/../screenshots/screenshot_dark.jpg)
+
+The app also has a light theme.
 
 ## Usage
 

@@ -3,7 +3,9 @@
 
 ## 屏幕截图
 
-![image](./screenshot_1.jpg)
+![image](./screenshot/../screenshots/screenshot_dark.jpg)
+
+应用还有一个浅色主题。
 
 ## 用法
 
