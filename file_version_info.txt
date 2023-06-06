@@ -6,8 +6,8 @@ VSVersionInfo(
   ffi=FixedFileInfo(
     # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
     # Set not needed items to zero 0.
-    filevers=(1, 1, 0, 0),
-    prodvers=(1, 1, 0, 0),
+    filevers=(1, 2, 1, 0),
+    prodvers=(1, 2, 1, 0),
     # Contains a bitmask that specifies the valid bits 'flags'r
     mask=0x0,
     # Contains a bitmask that specifies the Boolean attributes of the file.
@@ -31,12 +31,12 @@ VSVersionInfo(
         '000904b0',
         [StringStruct('CompanyName', 'OpenVPI Team'),
         StringStruct('FileDescription', 'Audio Slicer'),
-        StringStruct('FileVersion', '1.1.0.0'),
+        StringStruct('FileVersion', '1.2.1.0'),
         StringStruct('InternalName', 'slicer-gui.exe'),
         StringStruct('LegalCopyright', 'Copyright 2020-2023 OpenVPI Team'),
         StringStruct('OriginalFilename', 'slicer-gui.exe'),
         StringStruct('ProductName', 'Audio Slicer'),
-        StringStruct('ProductVersion', '1.1.0.0')])
+        StringStruct('ProductVersion', '1.2.1.0')])
       ]), 
     VarFileInfo([VarStruct('Translation', [9, 1200])])
   ]
