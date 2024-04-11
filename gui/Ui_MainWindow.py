@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.0
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,10 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFormLayout, QFrame, QGroupBox,
-    QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QMainWindow, QProgressBar, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QFormLayout, QFrame,
+    QGroupBox, QHBoxLayout, QLabel, QLineEdit,
+    QListWidget, QListWidgetItem, QMainWindow, QProgressBar,
+    QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -26,7 +27,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(768, 480)
         font = QFont()
-        font.setFamily(u"Microsoft YaHei UI")
+        font.setFamilies([u"Microsoft YaHei UI"])
         MainWindow.setFont(font)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -164,6 +165,38 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
 
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.label = QLabel(self.groupBox_2)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout_5.addWidget(self.label)
+
+        self.radioButton = QRadioButton(self.groupBox_2)
+        self.buttonGroup = QButtonGroup(MainWindow)
+        self.buttonGroup.setObjectName(u"buttonGroup")
+        self.buttonGroup.addButton(self.radioButton)
+        self.radioButton.setObjectName(u"radioButton")
+        self.radioButton.setChecked(True)
+
+        self.horizontalLayout_5.addWidget(self.radioButton, 0, Qt.AlignHCenter)
+
+        self.radioButton_1 = QRadioButton(self.groupBox_2)
+        self.buttonGroup.addButton(self.radioButton_1)
+        self.radioButton_1.setObjectName(u"radioButton_1")
+
+        self.horizontalLayout_5.addWidget(self.radioButton_1, 0, Qt.AlignHCenter)
+
+        self.radioButton_2 = QRadioButton(self.groupBox_2)
+        self.buttonGroup.addButton(self.radioButton_2)
+        self.radioButton_2.setObjectName(u"radioButton_2")
+        self.radioButton_2.setEnabled(True)
+
+        self.horizontalLayout_5.addWidget(self.radioButton_2, 0, Qt.AlignHCenter)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_5)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
@@ -221,6 +254,11 @@ class Ui_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Output Directory (default to the same as the audio)", None))
         self.lineEditOutputDir.setText("")
         self.pushButtonBrowse.setText(QCoreApplication.translate("MainWindow", u"Browse...", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Output Type", None))
+        self.radioButton.setText(QCoreApplication.translate("MainWindow", u"wav", None))
+        self.radioButton_1.setText(QCoreApplication.translate("MainWindow", u"flac", None))
+        self.radioButton_2.setText(QCoreApplication.translate("MainWindow", u"mp3", None))
         self.pushButtonAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))
         self.pushButtonStart.setText(QCoreApplication.translate("MainWindow", u"Start", None))
     # retranslateUi
+
