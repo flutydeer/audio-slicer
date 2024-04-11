@@ -177,6 +177,7 @@ class Ui_MainWindow(object):
         self.buttonGroup.setObjectName(u"buttonGroup")
         self.buttonGroup.addButton(self.radioButton)
         self.radioButton.setObjectName(u"radioButton")
+        self.radioButton.setText(u"wav")
         self.radioButton.setChecked(True)
 
         self.horizontalLayout_5.addWidget(self.radioButton, 0, Qt.AlignHCenter)
@@ -184,6 +185,7 @@ class Ui_MainWindow(object):
         self.radioButton_1 = QRadioButton(self.groupBox_2)
         self.buttonGroup.addButton(self.radioButton_1)
         self.radioButton_1.setObjectName(u"radioButton_1")
+        self.radioButton_1.setText(u"flac")
 
         self.horizontalLayout_5.addWidget(self.radioButton_1, 0, Qt.AlignHCenter)
 
@@ -191,6 +193,7 @@ class Ui_MainWindow(object):
         self.buttonGroup.addButton(self.radioButton_2)
         self.radioButton_2.setObjectName(u"radioButton_2")
         self.radioButton_2.setEnabled(True)
+        self.radioButton_2.setText(u"mp3")
 
         self.horizontalLayout_5.addWidget(self.radioButton_2, 0, Qt.AlignHCenter)
 
@@ -255,9 +258,6 @@ class Ui_MainWindow(object):
         self.lineEditOutputDir.setText("")
         self.pushButtonBrowse.setText(QCoreApplication.translate("MainWindow", u"Browse...", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Output Format", None))
-        self.radioButton.setText(QCoreApplication.translate("MainWindow", u"wav", None))
-        self.radioButton_1.setText(QCoreApplication.translate("MainWindow", u"flac", None))
-        self.radioButton_2.setText(QCoreApplication.translate("MainWindow", u"mp3", None))
         self.pushButtonAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))
         self.pushButtonStart.setText(QCoreApplication.translate("MainWindow", u"Start", None))
     # retranslateUi

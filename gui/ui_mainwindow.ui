@@ -225,7 +225,7 @@
            <item alignment="Qt::AlignHCenter">
             <widget class="QRadioButton" name="radioButton">
              <property name="text">
-              <string>wav</string>
+              <string notr="true">wav</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -238,7 +238,7 @@
            <item alignment="Qt::AlignHCenter">
             <widget class="QRadioButton" name="radioButton_1">
              <property name="text">
-              <string>flac</string>
+              <string notr="true">flac</string>
              </property>
              <attribute name="buttonGroup">
               <string notr="true">buttonGroup</string>
@@ -251,7 +251,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>mp3</string>
+              <string notr="true">mp3</string>
              </property>
              <attribute name="buttonGroup">
               <string notr="true">buttonGroup</string>
