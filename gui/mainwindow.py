@@ -51,10 +51,11 @@ class MainWindow(QMainWindow):
         # Must set to accept drag and drop events
         self.setAcceptDrops(True)
 
-        # Get available formats
+        # Get available formats/extensions supported
         self.availableFormats = [str(formatExt).lower() for formatExt in soundfile.available_formats().keys()]
-        # hacky way to make to recognize .opus files, supported by libsndfile
-        # blame yt-dl(p) for using that ext and making me add this
+        # libsndfile supports Opus in Ogg container
+        # .opus is a valid extension and recommended for Ogg Opus (see RFC 7845, Section 9)
+        # append opus for convenience as tools like youtube-dl(p) extract to .opus by default
         self.availableFormats.append("opus")
 
         self.formatAllFilter = " ".join([f"*.{formatExt}" for formatExt in self.availableFormats])
