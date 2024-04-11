@@ -254,7 +254,7 @@ class Ui_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Output Directory (default to the same as the audio)", None))
         self.lineEditOutputDir.setText("")
         self.pushButtonBrowse.setText(QCoreApplication.translate("MainWindow", u"Browse...", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Output Type", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Output Format", None))
         self.radioButton.setText(QCoreApplication.translate("MainWindow", u"wav", None))
         self.radioButton_1.setText(QCoreApplication.translate("MainWindow", u"flac", None))
         self.radioButton_2.setText(QCoreApplication.translate("MainWindow", u"mp3", None))
