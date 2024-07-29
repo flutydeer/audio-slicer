@@ -51,6 +51,16 @@ class MainWindow(QMainWindow):
         # Must set to accept drag and drop events
         self.setAcceptDrops(True)
 
+        # Get available formats/extensions supported
+        self.availableFormats = [str(formatExt).lower() for formatExt in soundfile.available_formats().keys()]
+        # libsndfile supports Opus in Ogg container
+        # .opus is a valid extension and recommended for Ogg Opus (see RFC 7845, Section 9)
+        # append opus for convenience as tools like youtube-dl(p) extract to .opus by default
+        self.availableFormats.append("opus")
+
+        self.formatAllFilter = " ".join([f"*.{formatExt}" for formatExt in self.availableFormats])
+        self.formatIndividualFilter = ";;".join([f"{formatExt} (*.{formatExt})" for formatExt in sorted(self.availableFormats)])
+
     def _q_browse_output_dir(self):
         path = QFileDialog.getExistingDirectory(
             self, "Browse Output Directory", ".")
@@ -63,7 +73,7 @@ class MainWindow(QMainWindow):
             return
 
         paths, _ = QFileDialog.getOpenFileNames(
-            self, 'Select Audio Files', ".", 'Wave Files(*.wav)')
+            self, 'Select Audio Files', ".", f'Audio ({self.formatAllFilter});;{self.formatIndividualFilter}')
         for path in paths:
             item = QListWidgetItem()
             item.setSizeHint(QSize(200, 24))
@@ -127,8 +137,9 @@ class MainWindow(QMainWindow):
                         if not info.exists():
                             info.mkpath(out_dir)
 
+                    ext = self.win.ui.buttonGroup.checkedButton().text()
                     for i, chunk in enumerate(chunks):
-                        path = os.path.join(out_dir, f'%s_%d.wav' % (os.path.basename(filename)
+                        path = os.path.join(out_dir, f'%s_%d.{ext}' % (os.path.basename(filename)
                                                                      .rsplit('.', maxsplit=1)[0], i))
                         if not is_mono:
                             chunk = chunk.T
@@ -201,16 +212,16 @@ class MainWindow(QMainWindow):
 
     def dragEnterEvent(self, event):
         urls = event.mimeData().urls()
-        has_wav = False
+        valid = False
         for url in urls:
             if not url.isLocalFile():
                 continue
             path = url.toLocalFile()
             ext = os.path.splitext(path)[1]
-            if ext.lower() == '.wav':
-                has_wav = True
+            if ext[1:].lower() in self.availableFormats:
+                valid = True
                 break
-        if has_wav:
+        if valid:
             event.accept()
 
     def dropEvent(self, event):
@@ -220,7 +231,7 @@ class MainWindow(QMainWindow):
                 continue
             path = url.toLocalFile()
             ext = os.path.splitext(path)[1]
-            if ext.lower() != '.wav':
+            if ext[1:].lower() not in self.availableFormats:
                 continue
             item = QListWidgetItem()
             item.setSizeHint(QSize(200, 24))
