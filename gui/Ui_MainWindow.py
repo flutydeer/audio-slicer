@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.pushButtonAddFiles = QPushButton(self.centralwidget)
         self.pushButtonAddFiles.setObjectName(u"pushButtonAddFiles")
         self.pushButtonAddFiles.setEnabled(True)
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonAddFiles.sizePolicy().hasHeightForWidth())
@@ -46,7 +46,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.pushButtonAddFiles)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
@@ -66,7 +66,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.listWidgetTaskList = QListWidget(self.groupBox)
         self.listWidgetTaskList.setObjectName(u"listWidgetTaskList")
-        self.listWidgetTaskList.setFrameShadow(QFrame.Plain)
+        self.listWidgetTaskList.setFrameShadow(QFrame.Shadow.Plain)
 
         self.verticalLayout_2.addWidget(self.listWidgetTaskList)
 
@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
 
         self.lineEditThreshold = QLineEdit(self.groupBox_2)
         self.lineEditThreshold.setObjectName(u"lineEditThreshold")
-        self.lineEditThreshold.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lineEditThreshold.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineEditThreshold)
 
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
 
         self.lineEditMinLen = QLineEdit(self.groupBox_2)
         self.lineEditMinLen.setObjectName(u"lineEditMinLen")
-        self.lineEditMinLen.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lineEditMinLen.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.lineEditMinLen)
 
@@ -115,7 +115,7 @@ class Ui_MainWindow(object):
 
         self.lineEditMinInterval = QLineEdit(self.groupBox_2)
         self.lineEditMinInterval.setObjectName(u"lineEditMinInterval")
-        self.lineEditMinInterval.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lineEditMinInterval.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.lineEditMinInterval)
 
@@ -126,7 +126,7 @@ class Ui_MainWindow(object):
 
         self.lineEditHopSize = QLineEdit(self.groupBox_2)
         self.lineEditHopSize.setObjectName(u"lineEditHopSize")
-        self.lineEditHopSize.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lineEditHopSize.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.lineEditHopSize)
 
@@ -137,7 +137,7 @@ class Ui_MainWindow(object):
 
         self.lineEditMaxSilence = QLineEdit(self.groupBox_2)
         self.lineEditMaxSilence.setObjectName(u"lineEditMaxSilence")
-        self.lineEditMaxSilence.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lineEditMaxSilence.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.lineEditMaxSilence)
 
@@ -153,7 +153,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.lineEditOutputDir = QLineEdit(self.groupBox_2)
         self.lineEditOutputDir.setObjectName(u"lineEditOutputDir")
-        self.lineEditOutputDir.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEditOutputDir.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
 
         self.horizontalLayout_4.addWidget(self.lineEditOutputDir)
 
@@ -172,35 +172,35 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5.addWidget(self.label)
 
-        self.radioButton = QRadioButton(self.groupBox_2)
+        self.radioButtonWav = QRadioButton(self.groupBox_2)
         self.buttonGroup = QButtonGroup(MainWindow)
         self.buttonGroup.setObjectName(u"buttonGroup")
-        self.buttonGroup.addButton(self.radioButton)
-        self.radioButton.setObjectName(u"radioButton")
-        self.radioButton.setText(u"wav")
-        self.radioButton.setChecked(True)
+        self.buttonGroup.addButton(self.radioButtonWav)
+        self.radioButtonWav.setObjectName(u"radioButtonWav")
+        self.radioButtonWav.setText(u"wav")
+        self.radioButtonWav.setChecked(True)
 
-        self.horizontalLayout_5.addWidget(self.radioButton, 0, Qt.AlignHCenter)
+        self.horizontalLayout_5.addWidget(self.radioButtonWav, 0, Qt.AlignmentFlag.AlignHCenter)
 
-        self.radioButton_1 = QRadioButton(self.groupBox_2)
-        self.buttonGroup.addButton(self.radioButton_1)
-        self.radioButton_1.setObjectName(u"radioButton_1")
-        self.radioButton_1.setText(u"flac")
+        self.radioButtonFlac = QRadioButton(self.groupBox_2)
+        self.buttonGroup.addButton(self.radioButtonFlac)
+        self.radioButtonFlac.setObjectName(u"radioButtonFlac")
+        self.radioButtonFlac.setText(u"flac")
 
-        self.horizontalLayout_5.addWidget(self.radioButton_1, 0, Qt.AlignHCenter)
+        self.horizontalLayout_5.addWidget(self.radioButtonFlac, 0, Qt.AlignmentFlag.AlignHCenter)
 
-        self.radioButton_2 = QRadioButton(self.groupBox_2)
-        self.buttonGroup.addButton(self.radioButton_2)
-        self.radioButton_2.setObjectName(u"radioButton_2")
-        self.radioButton_2.setEnabled(True)
-        self.radioButton_2.setText(u"mp3")
+        self.radioButtonMp3 = QRadioButton(self.groupBox_2)
+        self.buttonGroup.addButton(self.radioButtonMp3)
+        self.radioButtonMp3.setObjectName(u"radioButtonMp3")
+        self.radioButtonMp3.setEnabled(True)
+        self.radioButtonMp3.setText(u"mp3")
 
-        self.horizontalLayout_5.addWidget(self.radioButton_2, 0, Qt.AlignHCenter)
+        self.horizontalLayout_5.addWidget(self.radioButtonMp3, 0, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
 

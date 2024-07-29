@@ -52,14 +52,17 @@ class MainWindow(QMainWindow):
         self.setAcceptDrops(True)
 
         # Get available formats/extensions supported
-        self.availableFormats = [str(formatExt).lower() for formatExt in soundfile.available_formats().keys()]
+        self.availableFormats = [str(formatExt).lower(
+        ) for formatExt in soundfile.available_formats().keys()]
         # libsndfile supports Opus in Ogg container
         # .opus is a valid extension and recommended for Ogg Opus (see RFC 7845, Section 9)
         # append opus for convenience as tools like youtube-dl(p) extract to .opus by default
         self.availableFormats.append("opus")
 
-        self.formatAllFilter = " ".join([f"*.{formatExt}" for formatExt in self.availableFormats])
-        self.formatIndividualFilter = ";;".join([f"{formatExt} (*.{formatExt})" for formatExt in sorted(self.availableFormats)])
+        self.formatAllFilter = " ".join(
+            [f"*.{formatExt}" for formatExt in self.availableFormats])
+        self.formatIndividualFilter = ";;".join(
+            [f"{formatExt} (*.{formatExt})" for formatExt in sorted(self.availableFormats)])
 
     def _q_browse_output_dir(self):
         path = QFileDialog.getExistingDirectory(
@@ -91,7 +94,7 @@ class MainWindow(QMainWindow):
 
     def _q_about(self):
         QMessageBox.information(
-            self, "About", "Audio Slicer v1.2.1\nCopyright 2020-2023 OpenVPI Team")
+            self, "About", "Audio Slicer v1.3.0\nCopyright 2020-2024 OpenVPI Team")
 
     def _q_start(self):
         if self.processing:
@@ -101,6 +104,16 @@ class MainWindow(QMainWindow):
         item_count = self.ui.listWidgetTaskList.count()
         if item_count == 0:
             return
+
+        output_format = self.ui.buttonGroup.checkedButton().text()
+        if output_format == "mp3":
+            ret = QMessageBox.warning(self, "Warning",
+                                      "MP3 is not recommended for saving vocals as it is lossy. "
+                                      "If you want to save disk space, consider using FLAC instead. "
+                                      "Do you want to continue?",
+                                      QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+            if ret == QMessageBox.Cancel:
+                return
 
         class WorkThread(QThread):
             oneFinished = Signal()
@@ -140,7 +153,7 @@ class MainWindow(QMainWindow):
                     ext = self.win.ui.buttonGroup.checkedButton().text()
                     for i, chunk in enumerate(chunks):
                         path = os.path.join(out_dir, f'%s_%d.{ext}' % (os.path.basename(filename)
-                                                                     .rsplit('.', maxsplit=1)[0], i))
+                                                                       .rsplit('.', maxsplit=1)[0], i))
                         if not is_mono:
                             chunk = chunk.T
                         soundfile.write(path, chunk, sr)

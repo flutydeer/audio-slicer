@@ -37,8 +37,9 @@ if __name__ == '__main__':
     style = QStyleFactory.create("fusion")
     app.setStyle(style)
 
-    font = QFont('Microsoft YaHei UI')
-    font.setPixelSize(12)
+    font = QFont()
+    # font.setPixelSize(12)
+    font.setHintingPreference(QFont.PreferNoHinting)
     app.setFont(font)
 
     window = gui.mainwindow.MainWindow()
