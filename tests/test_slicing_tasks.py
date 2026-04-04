@@ -7,7 +7,8 @@ from unittest import mock
 import numpy as np
 import soundfile
 
-from gui.slicing_tasks import SlicingSettings, parse_slicing_settings, run_slicing_task
+from gui.slicing_tasks import SlicingSettings, build_rms_list_from_file, parse_slicing_settings, run_slicing_task
+from slicer2 import Slicer, get_rms
 
 
 class RunSlicingTaskTests(unittest.TestCase):
@@ -50,7 +51,7 @@ class RunSlicingTaskTests(unittest.TestCase):
             self.assertTrue(Path(path).exists())
 
     def test_run_slicing_task_returns_failure_when_write_raises(self):
-        with mock.patch("gui.slicing_tasks.soundfile.write", side_effect=RuntimeError("disk full")):
+        with mock.patch("gui.slicing_tasks.write_slice_range", side_effect=RuntimeError("disk full")):
             result = run_slicing_task(
                 str(self.source_path),
                 str(self.output_dir),
@@ -61,6 +62,18 @@ class RunSlicingTaskTests(unittest.TestCase):
         self.assertFalse(result.success)
         self.assertEqual(result.output_count, 0)
         self.assertIn("disk full", result.error)
+
+    def test_run_slicing_task_streams_without_soundfile_read(self):
+        with mock.patch("gui.slicing_tasks.soundfile.read", side_effect=AssertionError("whole-file read should not be used")):
+            result = run_slicing_task(
+                str(self.source_path),
+                str(self.output_dir),
+                "wav",
+                self.settings,
+            )
+
+        self.assertTrue(result.success)
+        self.assertGreaterEqual(result.output_count, 1)
 
 
 class ParseSlicingSettingsTests(unittest.TestCase):
@@ -87,6 +100,39 @@ class ParseSlicingSettingsTests(unittest.TestCase):
                 max_sil_kept=100,
             ),
         )
+
+
+class BuildRmsListFromFileTests(unittest.TestCase):
+    def test_build_rms_list_from_file_matches_existing_rms_calculation(self):
+        sample_rate = 16000
+        tone = np.array(
+            [0.25 * math.sin(2 * math.pi * 440 * i / sample_rate) for i in range(sample_rate)],
+            dtype=np.float32,
+        )
+        silence = np.zeros(sample_rate // 2, dtype=np.float32)
+        waveform = np.concatenate([tone, silence, tone])
+        slicer = Slicer(
+            sr=sample_rate,
+            threshold=-40.0,
+            min_length=500,
+            min_interval=300,
+            hop_size=10,
+            max_sil_kept=100,
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "rms.wav"
+            soundfile.write(source_path, waveform, sample_rate)
+
+            with soundfile.SoundFile(source_path) as audio_file:
+                rms_list = build_rms_list_from_file(audio_file, slicer)
+
+        expected = get_rms(
+            y=waveform,
+            frame_length=slicer.win_size,
+            hop_length=slicer.hop_size,
+        ).squeeze(0)
+        self.assertTrue(np.allclose(rms_list, expected, atol=2e-6))
 
 
 if __name__ == "__main__":
