@@ -71,3 +71,9 @@ python slicer-gui.py
 ## 性能
 
 此应用程序在 Intel i7 8750H CPU 上的运行速度超过 400 倍于实时。速度可能因 CPU 和磁盘而异。
+
+## Linux 排障
+
+- `slicer-gui.py` 在 Linux 上需要图形桌面会话才能启动。
+- 如果看到缺少显示会话的提示，请在 X11/Wayland 桌面环境中运行，或使用能正确暴露 `DISPLAY` / `WAYLAND_DISPLAY` 的远程图形转发。
+- 纯无头终端环境下不支持直接启动 GUI。
