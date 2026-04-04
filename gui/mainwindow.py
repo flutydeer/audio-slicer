@@ -1,16 +1,14 @@
 import os
 
 import soundfile
-import numpy as np
-import urllib
 
 from typing import List
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
-from slicer2 import Slicer
 
 from gui.Ui_MainWindow import Ui_MainWindow
+from gui.slicing_tasks import SlicingResult, SlicingSettings, run_slicing_task
 
 
 class MainWindow(QMainWindow):
@@ -44,6 +42,9 @@ class MainWindow(QMainWindow):
         self.workers: list[QThread] = []
         self.workCount = 0
         self.workFinished = 0
+        self.workSucceeded = 0
+        self.workFailed = 0
+        self.workResults: list[SlicingResult] = []
         self.processing = False
 
         self.setWindowTitle(QApplication.applicationName())
@@ -115,50 +116,36 @@ class MainWindow(QMainWindow):
             if ret == QMessageBox.Cancel:
                 return
 
-        class WorkThread(QThread):
-            oneFinished = Signal()
+        settings = SlicingSettings(
+            threshold=float(self.ui.lineEditThreshold.text()),
+            min_length=int(self.ui.lineEditMinLen.text()),
+            min_interval=int(self.ui.lineEditMinInterval.text()),
+            hop_size=int(self.ui.lineEditHopSize.text()),
+            max_sil_kept=int(self.ui.lineEditMaxSilence.text()),
+        )
 
-            def __init__(self, filenames: List[str], window: MainWindow):
+        output_dir = self.ui.lineEditOutputDir.text()
+
+        class WorkThread(QThread):
+            oneFinished = Signal(object)
+
+            def __init__(self, filenames: List[str], output_dir: str, output_format: str, settings: SlicingSettings):
                 super().__init__()
 
                 self.filenames = filenames
-                self.win = window
+                self.output_dir = output_dir
+                self.output_format = output_format
+                self.settings = settings
 
             def run(self):
                 for filename in self.filenames:
-                    audio, sr = soundfile.read(filename, dtype=np.float32)
-                    is_mono = True
-                    if len(audio.shape) > 1:
-                        is_mono = False
-                        audio = audio.T
-                    slicer = Slicer(
-                        sr=sr,
-                        threshold=float(self.win.ui.lineEditThreshold.text()),
-                        min_length=int(self.win.ui.lineEditMinLen.text()),
-                        min_interval=int(
-                            self.win.ui.lineEditMinInterval.text()),
-                        hop_size=int(self.win.ui.lineEditHopSize.text()),
-                        max_sil_kept=int(self.win.ui.lineEditMaxSilence.text())
+                    result = run_slicing_task(
+                        filename,
+                        self.output_dir,
+                        self.output_format,
+                        self.settings,
                     )
-                    chunks = slicer.slice(audio)
-                    out_dir = self.win.ui.lineEditOutputDir.text()
-                    if out_dir == '':
-                        out_dir = os.path.dirname(os.path.abspath(filename))
-                    else:
-                        # Make dir if not exists
-                        info = QDir(out_dir)
-                        if not info.exists():
-                            info.mkpath(out_dir)
-
-                    ext = self.win.ui.buttonGroup.checkedButton().text()
-                    for i, chunk in enumerate(chunks):
-                        path = os.path.join(out_dir, f'%s_%d.{ext}' % (os.path.basename(filename)
-                                                                       .rsplit('.', maxsplit=1)[0], i))
-                        if not is_mono:
-                            chunk = chunk.T
-                        soundfile.write(path, chunk, sr)
-
-                    self.oneFinished.emit()
+                    self.oneFinished.emit(result)
 
         # Collect paths
         paths: list[str] = []
@@ -172,18 +159,26 @@ class MainWindow(QMainWindow):
 
         self.workCount = item_count
         self.workFinished = 0
+        self.workSucceeded = 0
+        self.workFailed = 0
+        self.workResults = []
         self.setProcessing(True)
 
         # Start work thread
-        worker = WorkThread(paths, self)
+        worker = WorkThread(paths, output_dir, output_format, settings)
         worker.oneFinished.connect(self._q_oneFinished)
         worker.finished.connect(self._q_threadFinished)
         worker.start()
 
         self.workers.append(worker)  # Collect in case of auto deletion
 
-    def _q_oneFinished(self):
+    def _q_oneFinished(self, result: SlicingResult):
+        self.workResults.append(result)
         self.workFinished += 1
+        if result.success:
+            self.workSucceeded += 1
+        else:
+            self.workFailed += 1
         self.ui.progressBar.setValue(self.workFinished)
 
     def _q_threadFinished(self):
@@ -192,9 +187,46 @@ class MainWindow(QMainWindow):
             worker.wait()
         self.workers.clear()
         self.setProcessing(False)
+        self._show_completion_message(self.workResults)
 
-        QMessageBox.information(
-            self, QApplication.applicationName(), "Slicing complete!")
+    def _show_completion_message(self, results: list[SlicingResult]):
+        processed_count = len(results)
+        success_count = sum(1 for result in results if result.success)
+        failed_count = processed_count - success_count
+        total_outputs = sum(result.output_count for result in results)
+        if failed_count == 0:
+            QMessageBox.information(
+                self,
+                QApplication.applicationName(),
+                f"Slicing complete!\nProcessed {processed_count} file(s).\nGenerated {total_outputs} output file(s).",
+            )
+            return
+
+        first_failure = next(result for result in results if not result.success)
+        failure_name = QFileInfo(first_failure.source_path).fileName() or first_failure.source_path
+        failure_message = (
+            f"Failed: {failure_name}\n{first_failure.error}"
+            if first_failure.error
+            else f"Failed: {failure_name}"
+        )
+
+        if success_count == 0:
+            QMessageBox.critical(
+                self,
+                QApplication.applicationName(),
+                f"Slicing failed for all {processed_count} file(s).\n{failure_message}",
+            )
+            return
+
+        QMessageBox.warning(
+            self,
+            QApplication.applicationName(),
+            "Slicing finished with errors.\n"
+            f"Succeeded: {success_count}\n"
+            f"Failed: {failed_count}\n"
+            f"Generated {total_outputs} output file(s).\n"
+            f"{failure_message}",
+        )
 
     def warningProcessNotFinished(self):
         QMessageBox.warning(self, QApplication.applicationName(),
