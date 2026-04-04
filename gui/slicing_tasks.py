@@ -55,6 +55,15 @@ def parse_slicing_settings(
     if error:
         return None, error
 
+    for field_name, value in (
+        ("Minimum Length", min_length),
+        ("Minimum Interval", min_interval),
+        ("Hop Size", hop_size),
+        ("Maximum Silence Length", max_sil_kept),
+    ):
+        if value <= 0:
+            return None, f"{field_name} must be greater than 0."
+
     if min_length < min_interval:
         return None, "Minimum Length must be greater than or equal to Minimum Interval."
     if min_interval < hop_size:

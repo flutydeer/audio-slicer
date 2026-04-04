@@ -64,6 +64,17 @@ class RunSlicingTaskTests(unittest.TestCase):
 
 
 class ParseSlicingSettingsTests(unittest.TestCase):
+    def test_parse_slicing_settings_rejects_zero_or_negative_values(self):
+        settings, error = parse_slicing_settings("-40", "500", "300", "0", "100")
+
+        self.assertIsNone(settings)
+        self.assertEqual(error, "Hop Size must be greater than 0.")
+
+        settings, error = parse_slicing_settings("-40", "-1", "300", "10", "100")
+
+        self.assertIsNone(settings)
+        self.assertEqual(error, "Minimum Length must be greater than 0.")
+
     def test_parse_slicing_settings_rejects_invalid_interval_order(self):
         settings, error = parse_slicing_settings("-40", "100", "300", "10", "100")
 
