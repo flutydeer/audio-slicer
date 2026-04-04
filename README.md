@@ -22,6 +22,9 @@ The app also has a light theme.
 
 - Clone the repository.
 
+- Use Python 3.11 to 3.14 for source installs. The dependency set in `requirements.txt` is chosen to work on newer Python releases such as Python 3.13.
+- The GUI theme is optional. If a compatible `qdarktheme` module is installed, the app will use it automatically; otherwise it falls back to the default Qt theme.
+
 - Run the following command to install requirements:
 
 ```shell
