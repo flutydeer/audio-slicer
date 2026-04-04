@@ -8,7 +8,7 @@ from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 
 from gui.Ui_MainWindow import Ui_MainWindow
-from gui.slicing_tasks import SlicingResult, SlicingSettings, run_slicing_task
+from gui.slicing_tasks import SlicingResult, SlicingSettings, parse_slicing_settings, run_slicing_task
 
 
 class MainWindow(QMainWindow):
@@ -106,6 +106,17 @@ class MainWindow(QMainWindow):
         if item_count == 0:
             return
 
+        settings, error_message = parse_slicing_settings(
+            self.ui.lineEditThreshold.text(),
+            self.ui.lineEditMinLen.text(),
+            self.ui.lineEditMinInterval.text(),
+            self.ui.lineEditHopSize.text(),
+            self.ui.lineEditMaxSilence.text(),
+        )
+        if error_message:
+            QMessageBox.warning(self, QApplication.applicationName(), error_message)
+            return
+
         output_format = self.ui.buttonGroup.checkedButton().text()
         if output_format == "mp3":
             ret = QMessageBox.warning(self, "Warning",
@@ -115,14 +126,6 @@ class MainWindow(QMainWindow):
                                       QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
             if ret == QMessageBox.Cancel:
                 return
-
-        settings = SlicingSettings(
-            threshold=float(self.ui.lineEditThreshold.text()),
-            min_length=int(self.ui.lineEditMinLen.text()),
-            min_interval=int(self.ui.lineEditMinInterval.text()),
-            hop_size=int(self.ui.lineEditHopSize.text()),
-            max_sil_kept=int(self.ui.lineEditMaxSilence.text()),
-        )
 
         output_dir = self.ui.lineEditOutputDir.text()
 

@@ -7,7 +7,7 @@ from unittest import mock
 import numpy as np
 import soundfile
 
-from gui.slicing_tasks import SlicingSettings, run_slicing_task
+from gui.slicing_tasks import SlicingSettings, parse_slicing_settings, run_slicing_task
 
 
 class RunSlicingTaskTests(unittest.TestCase):
@@ -61,6 +61,32 @@ class RunSlicingTaskTests(unittest.TestCase):
         self.assertFalse(result.success)
         self.assertEqual(result.output_count, 0)
         self.assertIn("disk full", result.error)
+
+
+class ParseSlicingSettingsTests(unittest.TestCase):
+    def test_parse_slicing_settings_rejects_invalid_interval_order(self):
+        settings, error = parse_slicing_settings("-40", "100", "300", "10", "100")
+
+        self.assertIsNone(settings)
+        self.assertEqual(
+            error,
+            "Minimum Length must be greater than or equal to Minimum Interval.",
+        )
+
+    def test_parse_slicing_settings_returns_settings_for_valid_input(self):
+        settings, error = parse_slicing_settings("-40", "500", "300", "10", "100")
+
+        self.assertEqual(error, "")
+        self.assertEqual(
+            settings,
+            SlicingSettings(
+                threshold=-40.0,
+                min_length=500,
+                min_interval=300,
+                hop_size=10,
+                max_sil_kept=100,
+            ),
+        )
 
 
 if __name__ == "__main__":

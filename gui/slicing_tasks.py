@@ -28,6 +28,49 @@ class SlicingResult:
         return len(self.output_paths)
 
 
+def parse_slicing_settings(
+    threshold_text: str,
+    min_length_text: str,
+    min_interval_text: str,
+    hop_size_text: str,
+    max_sil_kept_text: str,
+) -> tuple[SlicingSettings | None, str]:
+    threshold, error = _parse_float(threshold_text, "Threshold")
+    if error:
+        return None, error
+
+    min_length, error = _parse_int(min_length_text, "Minimum Length")
+    if error:
+        return None, error
+
+    min_interval, error = _parse_int(min_interval_text, "Minimum Interval")
+    if error:
+        return None, error
+
+    hop_size, error = _parse_int(hop_size_text, "Hop Size")
+    if error:
+        return None, error
+
+    max_sil_kept, error = _parse_int(max_sil_kept_text, "Maximum Silence Length")
+    if error:
+        return None, error
+
+    if min_length < min_interval:
+        return None, "Minimum Length must be greater than or equal to Minimum Interval."
+    if min_interval < hop_size:
+        return None, "Minimum Interval must be greater than or equal to Hop Size."
+    if max_sil_kept < hop_size:
+        return None, "Maximum Silence Length must be greater than or equal to Hop Size."
+
+    return SlicingSettings(
+        threshold=threshold,
+        min_length=min_length,
+        min_interval=min_interval,
+        hop_size=hop_size,
+        max_sil_kept=max_sil_kept,
+    ), ""
+
+
 def run_slicing_task(
     source_path: str,
     output_dir: str,
@@ -76,3 +119,17 @@ def run_slicing_task(
         success=True,
         output_paths=tuple(written_paths),
     )
+
+
+def _parse_float(value: str, field_name: str) -> tuple[float | None, str]:
+    try:
+        return float(value), ""
+    except ValueError:
+        return None, f"{field_name} must be a number."
+
+
+def _parse_int(value: str, field_name: str) -> tuple[int | None, str]:
+    try:
+        return int(value), ""
+    except ValueError:
+        return None, f"{field_name} must be an integer."
