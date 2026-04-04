@@ -47,6 +47,22 @@ class MainWindowCompletionMessageTests(unittest.TestCase):
         warning.assert_called_once()
         self.assertIn("bad.wav", warning.call_args.args[2])
 
+    def test_start_blocks_invalid_settings_before_worker_starts(self):
+        self.window.ui.listWidgetTaskList.addItem("input.wav")
+
+        with (
+            mock.patch.object(QMessageBox, "warning") as warning,
+            mock.patch("gui.mainwindow.parse_slicing_settings", return_value=(None, "Invalid settings")) as parse_settings,
+            mock.patch("gui.mainwindow.QThread.start") as thread_start,
+        ):
+            self.window._q_start()
+
+        parse_settings.assert_called_once()
+        thread_start.assert_not_called()
+        warning.assert_called_once()
+        self.assertFalse(self.window.processing)
+        self.assertEqual(self.window.workFinished, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
