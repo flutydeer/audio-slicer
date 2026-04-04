@@ -9,12 +9,24 @@ from gui.startup import apply_optional_theme, get_missing_display_error
 class ApplyOptionalThemeTests(unittest.TestCase):
     def test_apply_optional_theme_skips_missing_theme_module(self):
         log_stream = io.StringIO()
+        exc = ModuleNotFoundError("No module named 'qdarktheme'", name="qdarktheme")
 
-        with mock.patch("gui.startup.importlib.import_module", side_effect=ModuleNotFoundError("no module named qdarktheme")):
+        with mock.patch("gui.startup.importlib.import_module", side_effect=exc):
             applied = apply_optional_theme(log_stream)
 
         self.assertFalse(applied)
         self.assertIn("Optional theme module is unavailable", log_stream.getvalue())
+
+    def test_apply_optional_theme_reports_missing_transitive_dependency(self):
+        log_stream = io.StringIO()
+        exc = ModuleNotFoundError("No module named 'qtpy'", name="qtpy")
+
+        with mock.patch("gui.startup.importlib.import_module", side_effect=exc):
+            applied = apply_optional_theme(log_stream)
+
+        self.assertFalse(applied)
+        self.assertIn("Optional theme import failed", log_stream.getvalue())
+        self.assertNotIn("Optional theme module is unavailable", log_stream.getvalue())
 
     def test_apply_optional_theme_configures_theme_when_module_exists(self):
         log_stream = io.StringIO()

@@ -11,10 +11,16 @@ def apply_optional_theme(log_stream: TextIO | None = None) -> bool:
     try:
         theme_module = importlib.import_module("qdarktheme")
     except ModuleNotFoundError as exc:
-        print(
-            f"Optional theme module is unavailable; continuing without it. ({exc})",
-            file=stream,
-        )
+        if exc.name == "qdarktheme":
+            print(
+                f"Optional theme module is unavailable; continuing without it. ({exc})",
+                file=stream,
+            )
+        else:
+            print(
+                f"Optional theme import failed; continuing without it. ({type(exc).__name__}: {exc})",
+                file=stream,
+            )
         return False
     except Exception as exc:
         print(
