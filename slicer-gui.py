@@ -5,9 +5,14 @@ from PySide6.QtWidgets import QApplication, QStyleFactory
 from PySide6.QtGui import QFont
 
 import gui.mainwindow
-from gui.startup import apply_optional_theme
+from gui.startup import apply_optional_theme, get_missing_display_error
 
 if __name__ == '__main__':
+    display_error = get_missing_display_error()
+    if display_error:
+        print(display_error, file=sys.stderr)
+        sys.exit(1)
+
     # Write console outputs to log file.
     __stderr__ = sys.stderr
     date_time = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')

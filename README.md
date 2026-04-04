@@ -38,6 +38,12 @@ python slicer-gui.py
 ```
 
 Just simply add your audio files to the task list by clicking the "Add Audio Files..." button or dragging and drop them to the window, click the "Start" button and wait for it to finish. The progress bar cannot indicate the progress of individual tasks, so it keeps 0% until finished when there is only 1 task in the task list.
+
+### Linux Troubleshooting
+
+- `slicer-gui.py` requires a graphical desktop session on Linux.
+- If you see a message about a missing display session, run the app from an X11/Wayland desktop session or use SSH/X forwarding that exposes `DISPLAY` or `WAYLAND_DISPLAY`.
+- Running the GUI directly in a pure headless shell is not supported.
 ## Algorithm
 
 ### Silence detection
