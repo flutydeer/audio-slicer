@@ -1,11 +1,12 @@
 import os
 import sys
 import datetime
+import qdarktheme
 from PySide6.QtWidgets import QApplication, QStyleFactory
 from PySide6.QtGui import QFont
 
 import gui.mainwindow
-from gui.startup import apply_optional_theme, get_missing_display_error
+from gui.startup import get_missing_display_error
 
 if __name__ == '__main__':
     display_error = get_missing_display_error()
@@ -25,8 +26,8 @@ if __name__ == '__main__':
     app.setApplicationName("Audio Slicer")
     app.setApplicationDisplayName("Audio Slicer")
     
-    # Apply optional theme when a compatible qdarktheme module is installed.
-    apply_optional_theme(sys.stderr)
+    # Apply auto dark theme.
+    qdarktheme.setup_theme(theme="auto")
 
     # Auto dark title bar on Windows 10/11
     style = QStyleFactory.create("fusion")

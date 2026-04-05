@@ -20,7 +20,7 @@
 - 克隆此仓库。
 
 - 从源码运行时建议使用 Python 3.11 到 3.14。`requirements.txt` 中的依赖组合已调整为兼容较新的 Python 版本，例如 Python 3.13。
-- GUI 主题现在是可选增强功能。如果环境中安装了兼容的 `qdarktheme` 模块，程序会自动启用；否则会回退到默认的 Qt 主题。
+- `requirements.txt` 现在使用 `pyqtdarktheme-fork`，在支持较新 Python 版本的同时保持现有的 `import qdarktheme` 用法不变。
 
 - 运行以下命令安装环境：
 
