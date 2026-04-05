@@ -6,35 +6,33 @@ A simple GUI application that slices audio with silence detection.
 
 ## Screenshots
 
-![image](./screenshot/../screenshots/screenshot_dark.jpg)
+![image](./screenshots/screenshot_dark.jpg)
 
-The app also has a light theme.
+The app also has a [light theme](./screenshots/screenshot_light.jpg).
 
 ## Usage
 
 ### Windows
 
-- Download and extract the latest release [here](https://github.com/flutydeer/audio-slicer/releases).
+- Download and extract the latest [release](https://github.com/flutydeer/audio-slicer/releases).
 
 - Run "slicer-gui.exe".
 
 ### MacOS & Linux
 
 - Clone the repository.
-
-- Use Python 3.11 to 3.14 for source installs. The dependency set in `requirements.txt` is chosen to work on newer Python releases such as Python 3.13.
-- `requirements.txt` now installs `pyqtdarktheme-fork`, which keeps the existing `import qdarktheme` usage while supporting newer Python versions.
-
-- Run the following command to install requirements:
+- Install [uv](https://docs.astral.sh/uv/) if you haven't already. Python 3.14 is recommended.
+- Run the following commands to create virtual environment and install dependencies:
 
 ```shell
-pip install -r requirements.txt
+uv venv
+uv pip install -r requirements.txt
 ```
 
 - Run the following command to launch GUI:
 
-```Shell
-python slicer-gui.py
+```shell
+uv run python slicer-gui.py
 ```
 
 Just simply add your audio files to the task list by clicking the "Add Audio Files..." button or dragging and drop them to the window, click the "Start" button and wait for it to finish. The progress bar cannot indicate the progress of individual tasks, so it keeps 0% until finished when there is only 1 task in the task list.
@@ -44,6 +42,7 @@ Just simply add your audio files to the task list by clicking the "Add Audio Fil
 - `slicer-gui.py` requires a graphical desktop session on Linux.
 - If you see a message about a missing display session, run the app from an X11/Wayland desktop session or use SSH/X forwarding that exposes `DISPLAY` or `WAYLAND_DISPLAY`.
 - Running the GUI directly in a pure headless shell is not supported.
+
 ## Algorithm
 
 ### Silence detection
@@ -53,8 +52,6 @@ This application uses RMS (root mean score) to measure the quiteness of the audi
 ### Audio slicing
 
 Once the valid (sound) part reached **min length** since last slice and a silent part longer than **min interval** are detected, the audio will be sliced apart from the frame(s) with the lowest RMS value within the silent area. Long silence parts may be deleted.
-
-
 
 ## Parameters
 

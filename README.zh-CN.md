@@ -1,40 +1,46 @@
 # 音频切片机
+
 一个简约的 GUI 应用程序，通过静音检测对音频进行切片。
 
 ## 屏幕截图
 
-![image](./screenshot/../screenshots/screenshot_dark.jpg)
+![image](./screenshots/screenshot_dark.jpg)
 
-应用还有一个浅色主题。
+应用还有一个[浅色主题](./screenshots/screenshot_light.jpg)。
 
 ## 用法
 
 ### Windows
 
-- 在[这里](https://github.com/flutydeer/audio-slicer/releases)下载并解压最新版本。
+- 下载并解压最新[发行版](https://github.com/flutydeer/audio-slicer/releases)。
 
-- 运行“slicer-gui.exe”。
+- 运行"slicer-gui.exe"。
 
 ### MacOS & Linux
 
 - 克隆此仓库。
-
-- 从源码运行时建议使用 Python 3.11 到 3.14。`requirements.txt` 中的依赖组合已调整为兼容较新的 Python 版本，例如 Python 3.13。
-- `requirements.txt` 现在使用 `pyqtdarktheme-fork`，在支持较新 Python 版本的同时保持现有的 `import qdarktheme` 用法不变。
-
-- 运行以下命令安装环境：
+- 如果尚未安装 [uv](https://docs.astral.sh/uv/)，请先安装。推荐使用 Python 3.14。
+- 运行以下命令创建虚拟环境并安装依赖：
 
 ```shell
-pip install -r requirements.txt
+uv venv
+uv pip install -r requirements.txt
 ```
 
 - 运行以下命令启动 GUI：
 
-```Shell
-python slicer-gui.py
+```shell
+uv run python slicer-gui.py
 ```
 
-只需点击“Add Audio Files...”按钮来添加音频文件，或将它们拖放到窗口中，单击“Start”按钮并等待任务完成。进度条无法指示单个任务的进度，因此当任务列表中只有1个任务时，它会保持0%直到完成。
+只需点击"Add Audio Files..."按钮来添加音频文件，或将它们拖放到窗口中，单击"Start"按钮并等待任务完成。进度条无法指示单个任务的进度，因此当任务列表中只有1个任务时，它会保持0%直到完成。
+
+### Linux 排障
+
+- `slicer-gui.py` 在 Linux 上需要图形桌面会话才能启动。
+- 如果看到缺少显示会话的提示，请在 X11/Wayland 桌面环境中运行，或使用能正确暴露 `DISPLAY` / `WAYLAND_DISPLAY` 的远程图形转发。
+- 纯无头终端环境下不支持直接启动 GUI。
+
 ## 算法
 
 ### 静音检测
@@ -44,7 +50,6 @@ python slicer-gui.py
 ### 音频切片
 
 一旦检测到自上次切片以来的有效（声音）部分达到 **min length** （最小长度），且长度超过 **min interval**（最小间距）的静音部分，该音频将从静音区域内 RMS 值最低的帧脱离出来。长时间静音的部分可能会被删除。
-
 
 ## 参数
 
@@ -71,9 +76,3 @@ python slicer-gui.py
 ## 性能
 
 此应用程序在 Intel i7 8750H CPU 上的运行速度超过 400 倍于实时。速度可能因 CPU 和磁盘而异。
-
-## Linux 排障
-
-- `slicer-gui.py` 在 Linux 上需要图形桌面会话才能启动。
-- 如果看到缺少显示会话的提示，请在 X11/Wayland 桌面环境中运行，或使用能正确暴露 `DISPLAY` / `WAYLAND_DISPLAY` 的远程图形转发。
-- 纯无头终端环境下不支持直接启动 GUI。
