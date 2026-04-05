@@ -68,15 +68,34 @@ class Slicer:
         else:
             return waveform[begin * self.hop_size: min(waveform.shape[0], end * self.hop_size)]
 
-    # @timeit
-    def slice(self, waveform):
+    def _frame_to_sample(self, frame_index: int, total_samples: int) -> int:
+        return min(total_samples, frame_index * self.hop_size)
+
+    def slice_ranges(self, waveform):
         if len(waveform.shape) > 1:
             samples = waveform.mean(axis=0)
+            total_samples = waveform.shape[1]
         else:
             samples = waveform
+            total_samples = waveform.shape[0]
         if (samples.shape[0] + self.hop_size - 1) // self.hop_size <= self.min_length:
-            return [waveform]
-        rms_list = get_rms(y=samples, frame_length=self.win_size, hop_length=self.hop_size).squeeze(0)
+            return [(0, total_samples)]
+
+        rms_list = get_rms(
+            y=samples,
+            frame_length=self.win_size,
+            hop_length=self.hop_size,
+        ).squeeze(0)
+        return self.slice_ranges_from_rms(rms_list, total_samples)
+
+    def slice_ranges_from_rms(self, rms_list, total_samples):
+        if rms_list.shape[0] == 0:
+            return [(0, total_samples)]
+
+        total_frames = rms_list.shape[0]
+        if total_frames <= self.min_length:
+            return [(0, total_samples)]
+
         sil_tags = []
         silence_start = None
         clip_start = 0
@@ -125,23 +144,35 @@ class Slicer:
                 clip_start = pos_r
             silence_start = None
         # Deal with trailing silence.
-        total_frames = rms_list.shape[0]
         if silence_start is not None and total_frames - silence_start >= self.min_interval:
             silence_end = min(total_frames, silence_start + self.max_sil_kept)
             pos = rms_list[silence_start: silence_end + 1].argmin() + silence_start
             sil_tags.append((pos, total_frames + 1))
-        # Apply and return slices.
+
+        # Convert silent tags to sample ranges for the kept clips.
         if len(sil_tags) == 0:
-            return [waveform]
-        else:
-            chunks = []
-            if sil_tags[0][0] > 0:
-                chunks.append(self._apply_slice(waveform, 0, sil_tags[0][0]))
-            for i in range(len(sil_tags) - 1):
-                chunks.append(self._apply_slice(waveform, sil_tags[i][1], sil_tags[i + 1][0]))
-            if sil_tags[-1][1] < total_frames:
-                chunks.append(self._apply_slice(waveform, sil_tags[-1][1], total_frames))
-            return chunks
+            return [(0, total_samples)]
+
+        ranges = []
+        if sil_tags[0][0] > 0:
+            ranges.append((0, self._frame_to_sample(sil_tags[0][0], total_samples)))
+        for i in range(len(sil_tags) - 1):
+            ranges.append(
+                (
+                    self._frame_to_sample(sil_tags[i][1], total_samples),
+                    self._frame_to_sample(sil_tags[i + 1][0], total_samples),
+                )
+            )
+        if sil_tags[-1][1] < total_frames:
+            ranges.append((self._frame_to_sample(sil_tags[-1][1], total_samples), total_samples))
+        return ranges
+
+    # @timeit
+    def slice(self, waveform):
+        ranges = self.slice_ranges(waveform)
+        if len(waveform.shape) > 1:
+            return [waveform[:, begin:end] for begin, end in ranges]
+        return [waveform[begin:end] for begin, end in ranges]
 
 
 def main():

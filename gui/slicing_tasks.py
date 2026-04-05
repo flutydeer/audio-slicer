@@ -89,30 +89,14 @@ def run_slicing_task(
     written_paths: list[str] = []
 
     try:
-        audio, sample_rate = soundfile.read(source_path, dtype=np.float32)
-        is_mono = True
-        if len(audio.shape) > 1:
-            is_mono = False
-            audio = audio.T
-
-        slicer = Slicer(
-            sr=sample_rate,
-            threshold=settings.threshold,
-            min_length=settings.min_length,
-            min_interval=settings.min_interval,
-            hop_size=settings.hop_size,
-            max_sil_kept=settings.max_sil_kept,
-        )
-        chunks = slicer.slice(audio)
-
         target_dir = output_dir or os.path.dirname(os.path.abspath(source_path))
         os.makedirs(target_dir, exist_ok=True)
+        ranges, sample_rate, channels = analyze_slicing_task(source_path, settings)
 
         base_name = os.path.basename(source_path).rsplit(".", maxsplit=1)[0]
-        for index, chunk in enumerate(chunks):
-            chunk_to_write = chunk.T if not is_mono else chunk
+        for index, (begin, end) in enumerate(ranges):
             output_path = os.path.join(target_dir, f"{base_name}_{index}.{output_format}")
-            soundfile.write(output_path, chunk_to_write, sample_rate)
+            write_slice_range(source_path, output_path, sample_rate, channels, begin, end)
             written_paths.append(output_path)
     except Exception as exc:
         message = f"{type(exc).__name__}: {exc}" if str(exc) else type(exc).__name__
@@ -130,6 +114,86 @@ def run_slicing_task(
     )
 
 
+def analyze_slicing_task(
+    source_path: str,
+    settings: SlicingSettings,
+) -> tuple[list[tuple[int, int]], int, int]:
+    with soundfile.SoundFile(source_path) as source_file:
+        sample_rate = source_file.samplerate
+        channels = source_file.channels
+        total_samples = len(source_file)
+
+        slicer = Slicer(
+            sr=sample_rate,
+            threshold=settings.threshold,
+            min_length=settings.min_length,
+            min_interval=settings.min_interval,
+            hop_size=settings.hop_size,
+            max_sil_kept=settings.max_sil_kept,
+        )
+
+        if (total_samples + slicer.hop_size - 1) // slicer.hop_size <= slicer.min_length:
+            return [(0, total_samples)], sample_rate, channels
+
+        rms_list = build_rms_list_from_file(source_file, slicer)
+        ranges = slicer.slice_ranges_from_rms(rms_list, total_samples)
+        return ranges, sample_rate, channels
+
+
+def build_rms_list_from_file(
+    source_file: soundfile.SoundFile,
+    slicer: Slicer,
+    read_size: int = 131072,
+) -> np.ndarray:
+    source_file.seek(0)
+    pad = slicer.win_size // 2
+    # Match get_rms(..., pad_mode="constant") by zero-padding half a window at both ends.
+    buffer = np.zeros(pad, dtype=np.float32)
+    rms_parts: list[np.ndarray] = []
+
+    while True:
+        chunk = source_file.read(read_size, dtype="float32", always_2d=True)
+        if len(chunk) == 0:
+            break
+        mono = chunk.mean(axis=1, dtype=np.float32)
+        buffer = np.concatenate((buffer, mono.astype(np.float32, copy=False)))
+        values, buffer = _consume_rms_frames(buffer, slicer)
+        if values.size:
+            rms_parts.append(values)
+
+    buffer = np.concatenate((buffer, np.zeros(pad, dtype=np.float32)))
+    values, _ = _consume_rms_frames(buffer, slicer)
+    if values.size:
+        rms_parts.append(values)
+
+    if not rms_parts:
+        return np.zeros(0, dtype=np.float32)
+    return np.concatenate(rms_parts)
+
+
+def write_slice_range(
+    source_path: str,
+    output_path: str,
+    sample_rate: int,
+    channels: int,
+    begin: int,
+    end: int,
+    chunk_size: int = 65536,
+) -> None:
+    frames_remaining = max(0, end - begin)
+    with (
+        soundfile.SoundFile(source_path) as source_file,
+        soundfile.SoundFile(output_path, mode="w", samplerate=sample_rate, channels=channels) as output_file,
+    ):
+        source_file.seek(begin)
+        while frames_remaining > 0:
+            block = source_file.read(min(chunk_size, frames_remaining), dtype="float32", always_2d=True)
+            if len(block) == 0:
+                break
+            output_file.write(block)
+            frames_remaining -= len(block)
+
+
 def _parse_float(value: str, field_name: str) -> tuple[float | None, str]:
     try:
         return float(value), ""
@@ -142,3 +206,15 @@ def _parse_int(value: str, field_name: str) -> tuple[int | None, str]:
         return int(value), ""
     except ValueError:
         return None, f"{field_name} must be an integer."
+
+
+def _consume_rms_frames(buffer: np.ndarray, slicer: Slicer) -> tuple[np.ndarray, np.ndarray]:
+    if buffer.shape[0] < slicer.win_size:
+        return np.zeros(0, dtype=np.float32), buffer
+
+    usable = ((buffer.shape[0] - slicer.win_size) // slicer.hop_size) + 1
+    window_view = np.lib.stride_tricks.sliding_window_view(buffer, slicer.win_size)
+    windows = window_view[::slicer.hop_size][:usable]
+    rms_values = np.sqrt(np.mean(np.abs(windows) ** 2, axis=1, dtype=np.float64)).astype(np.float32)
+    remaining = buffer[usable * slicer.hop_size:]
+    return rms_values, remaining
