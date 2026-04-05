@@ -78,3 +78,5 @@ The maximum silence length kept around the sliced audio, presented in millisecon
 ## Performance
 
 This application runs over 400x faster than real-time on an Intel i7 8750H CPU. Speed may vary according to your CPU and your disk.
+
+Peak memory usage is optimized for large audio files by streaming the slicing process instead of loading entire files into memory.
