@@ -147,6 +147,7 @@ def build_rms_list_from_file(
 ) -> np.ndarray:
     source_file.seek(0)
     pad = slicer.win_size // 2
+    # Match get_rms(..., pad_mode="constant") by zero-padding half a window at both ends.
     buffer = np.zeros(pad, dtype=np.float32)
     rms_parts: list[np.ndarray] = []
 
