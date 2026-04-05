@@ -22,6 +22,9 @@ The app also has a light theme.
 
 - Clone the repository.
 
+- Use Python 3.11 to 3.14 for source installs. The dependency set in `requirements.txt` is chosen to work on newer Python releases such as Python 3.13.
+- `requirements.txt` now installs `pyqtdarktheme-fork`, which keeps the existing `import qdarktheme` usage while supporting newer Python versions.
+
 - Run the following command to install requirements:
 
 ```shell
@@ -35,6 +38,12 @@ python slicer-gui.py
 ```
 
 Just simply add your audio files to the task list by clicking the "Add Audio Files..." button or dragging and drop them to the window, click the "Start" button and wait for it to finish. The progress bar cannot indicate the progress of individual tasks, so it keeps 0% until finished when there is only 1 task in the task list.
+
+### Linux Troubleshooting
+
+- `slicer-gui.py` requires a graphical desktop session on Linux.
+- If you see a message about a missing display session, run the app from an X11/Wayland desktop session or use SSH/X forwarding that exposes `DISPLAY` or `WAYLAND_DISPLAY`.
+- Running the GUI directly in a pure headless shell is not supported.
 ## Algorithm
 
 ### Silence detection

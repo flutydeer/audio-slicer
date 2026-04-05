@@ -19,6 +19,9 @@
 
 - 克隆此仓库。
 
+- 从源码运行时建议使用 Python 3.11 到 3.14。`requirements.txt` 中的依赖组合已调整为兼容较新的 Python 版本，例如 Python 3.13。
+- `requirements.txt` 现在使用 `pyqtdarktheme-fork`，在支持较新 Python 版本的同时保持现有的 `import qdarktheme` 用法不变。
+
 - 运行以下命令安装环境：
 
 ```shell
@@ -68,3 +71,9 @@ python slicer-gui.py
 ## 性能
 
 此应用程序在 Intel i7 8750H CPU 上的运行速度超过 400 倍于实时。速度可能因 CPU 和磁盘而异。
+
+## Linux 排障
+
+- `slicer-gui.py` 在 Linux 上需要图形桌面会话才能启动。
+- 如果看到缺少显示会话的提示，请在 X11/Wayland 桌面环境中运行，或使用能正确暴露 `DISPLAY` / `WAYLAND_DISPLAY` 的远程图形转发。
+- 纯无头终端环境下不支持直接启动 GUI。
